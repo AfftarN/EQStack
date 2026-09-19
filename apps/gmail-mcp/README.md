@@ -1,8 +1,8 @@
-# Gmail MCP
+# Gmail MCP (portable-schema fork)
 
-[![CI](https://github.com/george43g/EQStack/actions/workflows/gmail-ci.yml/badge.svg)](https://github.com/george43g/EQStack/actions/workflows/gmail-ci.yml)
+> This package (`@afftar/gmail-mcp`) is a compatibility fork of `@george43g/gmail-mcp` from [george43g/EQStack](https://github.com/george43g/EQStack). The only functional difference: tool JSON Schemas are published in a portable form — every object property is listed in `required`, optional fields accept explicit `null` via `anyOf`, and the `inlineImages.cid` regex uses only escapes that strict validators accept. This fixes `400 Invalid JSON schema` errors on strict providers (Meta Muse Spark, DeepSeek) while runtime validation stays as strict as upstream. If upstream merges the equivalent fix, this fork becomes unnecessary.
 
-A Gmail integration with 33 MCP tools, a scriptable `gmail` CLI, an interactive console, and a keyboard-driven terminal UI.
+A Gmail integration with 30+ MCP tools, a scriptable `gmail` CLI, an interactive console, and a keyboard-driven terminal UI.
 
 This project is a history-preserving fork of [GongRzhe/Gmail-MCP-Server](https://github.com/GongRzhe/Gmail-MCP-Server). It also ports useful behavior contributed through [ArtyMcLabin/Gmail-MCP-Server](https://github.com/ArtyMcLabin/Gmail-MCP-Server). Original authors and contributors remain credited in the Git history and MIT license.
 
@@ -13,14 +13,14 @@ This project is a history-preserving fork of [GongRzhe/Gmail-MCP-Server](https:/
 Node.js 20.6 or newer is required. The package exposes one binary, `gmail`.
 
 ```bash
-npm install --global @george43g/gmail-mcp
+npm install --global @afftar/gmail-mcp
 gmail --version
 ```
 
 You can also run it without a global install:
 
 ```bash
-npx @george43g/gmail-mcp --help
+npx @afftar/gmail-mcp --help
 ```
 
 ## Authenticate
@@ -54,7 +54,7 @@ Example stdio configuration:
   "mcpServers": {
     "gmail": {
       "command": "npx",
-      "args": ["-y", "@george43g/gmail-mcp", "mcp"],
+      "args": ["-y", "@afftar/gmail-mcp", "mcp"],
       "env": { "GMAIL_ACCOUNT": "personal" }
     }
   }
@@ -68,12 +68,12 @@ Run two account-specific processes with distinct MCP tool names:
   "mcpServers": {
     "gmail-work": {
       "command": "npx",
-      "args": ["-y", "@george43g/gmail-mcp", "mcp", "--tool-prefix", "work_"],
+      "args": ["-y", "@afftar/gmail-mcp", "mcp", "--tool-prefix", "work_"],
       "env": { "GMAIL_ACCOUNT": "work" }
     },
     "gmail-personal": {
       "command": "npx",
-      "args": ["-y", "@george43g/gmail-mcp", "mcp", "--tool-prefix", "personal_"],
+      "args": ["-y", "@afftar/gmail-mcp", "mcp", "--tool-prefix", "personal_"],
       "env": { "GMAIL_ACCOUNT": "personal" }
     }
   }
