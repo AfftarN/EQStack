@@ -1,6 +1,6 @@
 {
-  "name": "@afftarn/gmail-mcp",
-  "version": "2.0.1",
+  "name": "@afftar/gmail-mcp",
+  "version": "2.0.2",
   "description": "Gmail MCP server with CLI, TUI, console, OAuth, and multi-account support",
   "type": "module",
   "main": "dist/cli/index.js",
@@ -10,6 +10,7 @@
   "scripts": {
     "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
     "build": "npm run clean && tsc",
+    "prepack": "chmod +x dist/cli/index.js",
     "start": "node --env-file-if-exists=.env --env-file-if-exists=.env.local dist/cli/index.js",
     "dev": "node --import tsx --env-file-if-exists=.env --env-file-if-exists=.env.local src/cli/index.ts",
     "dev:mcp": "node --import tsx --env-file-if-exists=.env --env-file-if-exists=.env.local src/cli/index.ts mcp",
@@ -55,13 +56,13 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/george43g/EQStack.git",
+    "url": "git+https://github.com/AfftarN/EQStack.git",
     "directory": "apps/gmail-mcp"
   },
   "bugs": {
-    "url": "https://github.com/george43g/EQStack/issues"
+    "url": "https://github.com/AfftarN/EQStack/issues"
   },
-  "homepage": "https://github.com/george43g/EQStack/tree/main/apps/gmail-mcp#readme",
+  "homepage": "https://github.com/AfftarN/EQStack/tree/release/afftarn-gmail-mcp/apps/gmail-mcp#readme",
   "publishConfig": {
     "access": "public"
   },
