@@ -55,7 +55,7 @@ import {
 import { getRecentErrorCount, getToolCallCount, setSession } from "./core/session.js";
 import { DEFAULT_SCOPES } from "./scopes.js";
 import { buildMcpServer, type CallToolFn } from "./server/build.js";
-import { resolveToolPrefix } from "./server/tool-prefix.js";
+import { resolvePortableSchemas, resolveToolPrefix } from "./server/tool-prefix.js";
 
 // Preserve the pre-package log-naming contract: NDJSON files land in
 // $TMPDIR/gmail-mcp/ as gmail-mcp-<pid>-<ts>.ndjson (the package default
@@ -177,6 +177,7 @@ export async function bootstrapSession(opts: BootstrapOptions = {}): Promise<Ses
 
     const { server, dispatch } = buildMcpServer({
       toolPrefix: resolveToolPrefix(process.argv.slice(2), env),
+      portableSchemas: resolvePortableSchemas(process.argv.slice(2), env),
     });
     _dispatcherFn = dispatch;
     void opts.skipTransport;
@@ -256,6 +257,7 @@ export async function bootstrapSession(opts: BootstrapOptions = {}): Promise<Ses
 
   const { server, dispatch } = buildMcpServer({
     toolPrefix: resolveToolPrefix(process.argv.slice(2), env),
+    portableSchemas: resolvePortableSchemas(process.argv.slice(2), env),
   });
   _dispatcherFn = dispatch;
 

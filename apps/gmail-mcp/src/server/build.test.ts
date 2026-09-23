@@ -127,6 +127,30 @@ describe("buildMcpServer MCP tool prefix", () => {
   });
 });
 
+describe("buildMcpServer portable schemas", () => {
+  async function listDraftEmailSchema(options?: { portableSchemas?: boolean }) {
+    setAuthorizedScopes(["gmail.modify"]);
+    const { server } = buildMcpServer(options);
+    const handlers = (server as unknown as { _requestHandlers: Map<string, RequestHandler> })
+      ._requestHandlers;
+    const listed = (await handlers.get("tools/list")!(
+      { method: "tools/list", params: {} },
+      { signal: new AbortController().signal },
+    )) as { tools: Array<{ name: string; inputSchema: { required?: string[] } }> };
+    return listed.tools.find((tool) => tool.name === "draft_email")!.inputSchema;
+  }
+
+  it("publishes plain optional fields by default", async () => {
+    expect((await listDraftEmailSchema()).required).toEqual(["to", "subject", "body"]);
+  });
+
+  it("publishes every field as required when portableSchemas is on", async () => {
+    const required = (await listDraftEmailSchema({ portableSchemas: true })).required;
+    expect(required).toContain("cc");
+    expect(required).toContain("inlineImages");
+  });
+});
+
 describe("buildMcpServer dispatcher", () => {
   it("rejects an unknown tool name with an error envelope (12.3)", async () => {
     setAuthorizedScopes(["gmail.modify", "gmail.settings.basic"]);
