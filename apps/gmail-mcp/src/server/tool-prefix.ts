@@ -17,3 +17,14 @@ export function canonicalToolName(name: string, prefix: string): string {
   const candidate = name.slice(prefix.length);
   return candidate;
 }
+
+/**
+ * Resolve whether tools/list publishes portable (required-but-nullable)
+ * schemas. `--portable-schemas` wins; otherwise GMAIL_MCP_PORTABLE_SCHEMAS
+ * set to "1" or "true". Off by default.
+ */
+export function resolvePortableSchemas(args: readonly string[], env: NodeJS.ProcessEnv): boolean {
+  if (args.includes("--portable-schemas")) return true;
+  const value = env.GMAIL_MCP_PORTABLE_SCHEMAS?.trim().toLowerCase();
+  return value === "1" || value === "true";
+}

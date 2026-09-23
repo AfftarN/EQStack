@@ -200,6 +200,7 @@ Self-healing surface covered by tests:
 | `GMAIL_AUTH_NON_INTERACTIVE` | unset | `1` forces non-interactive auth (skip the checkbox prompt, fall back to defaults). Auto-detected when `CI=true` or stdin is not a TTY. |
 | `GMAIL_HTTP_TOKEN` | unset (required for `--http`) | Bearer token gating `/mcp` requests in HTTP mode. Server refuses to start if `--http` is set but this is empty. Generate with `openssl rand -hex 32`. |
 | `GMAIL_ACCOUNT` | unset | Active account id. Selects which entry in `<configDir>/accounts/` to load. CLI flag `-a/--account` overrides. Falls back to `accounts.json` `defaultAccount`, then to the sole-account / legacy-implicit branches. See [Multi-account layout](#multi-account-layout). |
+| `GMAIL_MCP_PORTABLE_SCHEMAS` | unset (off) | `1`/`true` (or `gmail mcp --portable-schemas`) publishes every optional input field as required-but-nullable (`anyOf: [T, {type:"null"}]`) in `tools/list`, for strict validators such as DeepSeek that reject optional properties. Off by default: the portable catalogue is ~18% larger. Null-valued arguments are dropped before Zod parsing in both modes (`src/core/normalize-args.ts`). |
 
 ### Robustness (`MCP_*`) — library knobs
 | Name | Default | Purpose |

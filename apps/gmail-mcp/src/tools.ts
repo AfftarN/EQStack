@@ -128,22 +128,6 @@ function toPortableJsonSchema(schema: any): any {
   return { ...schema };
 }
 
-function stripNulls<T>(value: T): T {
-  if (Array.isArray(value))
-    return (value as unknown[]).map((v) => stripNulls(v as unknown)) as unknown as T;
-  if (value === null || value === undefined || typeof value !== "object") return value;
-  return Object.fromEntries(
-    Object.entries(value as Record<string, unknown>)
-      .filter(([, item]) => item !== null)
-      .map(([key, item]) => [key, stripNulls(item as unknown)]),
-  ) as unknown as T;
-}
-
-export function normalizeToolArgs<T>(args: T): T {
-  if (args === null || args === undefined) return {} as T;
-  return stripNulls(args);
-}
-
 export const SendDraftSchema = z.object({
   draftId: z.string().min(1).describe("ID of the draft to send"),
 });
@@ -1319,13 +1303,26 @@ export const toolDefinitions: ToolDefinition[] = [
 // Cast to any keeps TypeScript from chasing zod 3.25+'s deep generics, which
 // otherwise hit "Type instantiation is excessively deep" on this call.
 // The JSON schema output is dynamically validated by MCP clients regardless.
-export function toMcpTools(tools: ToolDefinition[]) {
-  return tools.map((tool) => ({
-    name: tool.name,
-    description: tool.description,
-    inputSchema: toPortableJsonSchema(zodToJsonSchema(tool.schema as any)),
-    annotations: tool.annotations,
-  }));
+//
+// `portableSchemas` (opt-in: `--portable-schemas` / GMAIL_MCP_PORTABLE_SCHEMAS=1)
+// republishes every optional field as required-but-nullable, for strict
+// validators such as DeepSeek's that reject optional properties. Off by
+// default: the portable form is ~18% larger and nudges clients into sending
+// explicit nulls, which clients that accept plain optional fields don't need.
+export interface ToMcpToolsOptions {
+  portableSchemas?: boolean;
+}
+
+export function toMcpTools(tools: ToolDefinition[], options: ToMcpToolsOptions = {}) {
+  return tools.map((tool) => {
+    const inputSchema = zodToJsonSchema(tool.schema as any);
+    return {
+      name: tool.name,
+      description: tool.description,
+      inputSchema: options.portableSchemas ? toPortableJsonSchema(inputSchema) : inputSchema,
+      annotations: tool.annotations,
+    };
+  });
 }
 
 // Get a tool definition by name

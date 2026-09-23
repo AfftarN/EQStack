@@ -89,11 +89,12 @@ export type CallToolFn = (
  * Prerequisite: setSession() must have been called (in main()/bootstrap)
  * so getOAuth2Client(), getAuthorizedScopes(), counters, etc. are valid.
  */
-export function buildMcpServer(options: { toolPrefix?: string } = {}): {
+export function buildMcpServer(options: { toolPrefix?: string; portableSchemas?: boolean } = {}): {
   server: Server;
   dispatch: CallToolFn;
 } {
   const toolPrefix = options.toolPrefix ?? "";
+  const portableSchemas = options.portableSchemas ?? false;
   const server = new Server(
     {
       name: "gmail",
@@ -110,7 +111,7 @@ export function buildMcpServer(options: { toolPrefix?: string } = {}): {
       hasScope(getAuthorizedScopes(), tool.scopes),
     );
     return {
-      tools: toMcpTools(availableTools).map((tool) => ({
+      tools: toMcpTools(availableTools, { portableSchemas }).map((tool) => ({
         ...tool,
         name: prefixedToolName(tool.name, toolPrefix),
       })),

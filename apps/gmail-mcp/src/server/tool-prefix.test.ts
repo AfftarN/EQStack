@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canonicalToolName, resolveToolPrefix } from "./tool-prefix.js";
+import { canonicalToolName, resolvePortableSchemas, resolveToolPrefix } from "./tool-prefix.js";
 
 describe("resolveToolPrefix", () => {
   it("defaults to empty and accepts both CLI forms", () => {
@@ -18,5 +18,20 @@ describe("resolveToolPrefix", () => {
     expect(canonicalToolName("work_read_email", "work_")).toBe("read_email");
     expect(canonicalToolName("read_email", "work_")).toBe("read_email");
     expect(canonicalToolName("read_email", "")).toBe("read_email");
+  });
+});
+
+describe("resolvePortableSchemas", () => {
+  it("is off by default and for unrecognised values", () => {
+    expect(resolvePortableSchemas([], {})).toBe(false);
+    expect(resolvePortableSchemas(["mcp"], { GMAIL_MCP_PORTABLE_SCHEMAS: "0" })).toBe(false);
+    expect(resolvePortableSchemas(["mcp"], { GMAIL_MCP_PORTABLE_SCHEMAS: "" })).toBe(false);
+    expect(resolvePortableSchemas(["mcp"], { GMAIL_MCP_PORTABLE_SCHEMAS: "no" })).toBe(false);
+  });
+
+  it("turns on with the CLI flag or GMAIL_MCP_PORTABLE_SCHEMAS=1/true", () => {
+    expect(resolvePortableSchemas(["mcp", "--portable-schemas"], {})).toBe(true);
+    expect(resolvePortableSchemas(["mcp"], { GMAIL_MCP_PORTABLE_SCHEMAS: "1" })).toBe(true);
+    expect(resolvePortableSchemas(["mcp"], { GMAIL_MCP_PORTABLE_SCHEMAS: "TRUE" })).toBe(true);
   });
 });

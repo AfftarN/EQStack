@@ -69,6 +69,19 @@ describe("OperationRegistry", () => {
     await expect(reg.dispatch("demo", { x: "not-a-number" }, fakeCtx())).rejects.toThrow();
   });
 
+  it("dispatch drops null-valued arguments before parsing (any client may send them)", async () => {
+    const reg = new OperationRegistry();
+    const handler = vi.fn(async () => ({ content: [] }));
+    reg.register({
+      name: "demo",
+      schema: z.object({ x: z.number(), label: z.string().optional() }),
+      scopes: [],
+      handler,
+    });
+    await reg.dispatch("demo", { x: 1, label: null }, fakeCtx());
+    expect(handler.mock.calls[0][0]).toEqual({ x: 1 });
+  });
+
   it("dispatch throws for unregistered name", async () => {
     const reg = new OperationRegistry();
     await expect(reg.dispatch("nope", {}, fakeCtx())).rejects.toThrow(/no op registered/i);

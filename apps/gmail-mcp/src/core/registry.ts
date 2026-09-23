@@ -9,8 +9,8 @@
 // Use `has()` to gate that fallthrough.
 
 import type { z } from "zod";
-import { normalizeToolArgs } from "../tools.js";
 import type { OperationContext } from "./context.js";
+import { normalizeToolArgs } from "./normalize-args.js";
 
 /**
  * MCP-compatible response envelope. `content` keeps the wire-protocol text/image

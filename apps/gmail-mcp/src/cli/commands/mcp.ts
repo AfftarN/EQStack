@@ -13,6 +13,7 @@ export interface McpCommandOptions {
   bind?: string;
   tokenEnv?: string;
   toolPrefix?: string;
+  portableSchemas?: boolean;
 }
 
 export function buildMcpCommand(): Command {
@@ -23,6 +24,10 @@ export function buildMcpCommand(): Command {
     .option(
       "--tool-prefix <prefix>",
       "Prefix MCP-advertised tool names (or set GMAIL_MCP_TOOL_PREFIX)",
+    )
+    .option(
+      "--portable-schemas",
+      "Publish optional fields as required-but-nullable, for strict validators such as DeepSeek (or set GMAIL_MCP_PORTABLE_SCHEMAS=1)",
     )
     .option("--port <n>", "HTTP port (default: 8080)", (v) => Number.parseInt(v, 10), 8080)
     .option(
